@@ -18,6 +18,7 @@ document.body.appendChild(TOAST_CONTAINER);
 /** HTML markup for the toast template. */
 const TOAST_TEMPLATE = document.createElement("div");
 TOAST_TEMPLATE.className = "toast";
+TOAST_TEMPLATE.classList.add('shadow-lg')
 TOAST_TEMPLATE.setAttribute("role", "status");
 TOAST_TEMPLATE.setAttribute("aria-live", "polite");
 TOAST_TEMPLATE.setAttribute("aria-atomic", "true");
@@ -136,6 +137,8 @@ class Toast {
     static setTheme(theme = null) {
         let header = TOAST_TEMPLATE.querySelector(".toast-header");
         let close = header.querySelector(".btn-close");
+				alert(TOAST_STATUS)
+
         switch (theme) {
             case TOAST_THEME.LIGHT:
                 TOAST_TEMPLATE.style.backgroundColor = "var(--body-bg-color-light)";
@@ -189,7 +192,8 @@ class Toast {
         toastTitle.innerText = toastOptions.title;
         let toastBody = toastEl.querySelector(".toast-body");
         toastBody.innerHTML = toastOptions.message;
-        this.setStatus(toastEl, toastOptions.status);
+				let toastIcon = toastOptions.icon ? toastOptions.icon : 'bs';
+        this.setStatus(toastEl, toastOptions.status, toastIcon);
         // Add toast to the queue if it would exceed maxToastCount
         if (this.currentToastCount >= this.maxToastCount) {
             if (!this.queueEnabled)
@@ -212,29 +216,63 @@ class Toast {
      * @param {HTMLElement} toastEl The HTML of the toast being modified.
      * @param {TOAST_STATUS} status The integer value representing the toast's status.
      */
-    static setStatus(toastEl, status) {
+    static setStatus(toastEl, status, icon) {
         let statusIcon = toastEl.querySelector(".status-icon");
-        switch (status) {
-            case TOAST_STATUS.SUCCESS:
-                statusIcon.classList.add("text-success", "bi-check-circle-fill");
-                break;
-            case TOAST_STATUS.DANGER:
-                statusIcon.classList.add("text-danger", "bi-x-circle-fill");
-                toastEl.setAttribute("role", "alert");
-                toastEl.setAttribute("aria-live", "assertive");
-                break;
-            case TOAST_STATUS.WARNING:
-                statusIcon.classList.add("text-warning", "bi-exclamation-circle-fill");
-                toastEl.setAttribute("role", "alert");
-                toastEl.setAttribute("aria-live", "assertive");
-                break;
-            case TOAST_STATUS.INFO:
-                statusIcon.classList.add("text-info", "bi-info-circle-fill");
-                break;
-            default:
-                statusIcon.classList.add("d-none");
-                break;
-        }
+				let header = toastEl.querySelector(".toast-header");
+				if(icon != 'bs'){
+					statusIcon.innerHTML = icon
+				}
+        	switch (status) {
+        	    case TOAST_STATUS.SUCCESS:
+								if(icon == 'bs'){
+        	        statusIcon.classList.add("text-success", "bi-check-circle-fill");
+								} else {
+        	        statusIcon.classList.add("text-success");
+								}
+								toastEl.style.borderColor = 'var(--bs-success-border-subtle)';
+								header.style.borderColor = 'var(--bs-success-border-subtle)';
+								header.style.backgroundColor = 'var(--bs-success-bg-subtle)';
+								break;
+        	    case TOAST_STATUS.DANGER:
+								if(icon == 'bs'){
+        	        statusIcon.classList.add("text-danger", "bi-x-circle-fill");
+								} else {
+        	        statusIcon.classList.add("text-danger");
+								}
+        	        toastEl.setAttribute("role", "alert");
+        	        toastEl.setAttribute("aria-live", "assertive");
+									toastEl.style.borderColor = 'var(--bs-danger-border-subtle)';
+									header.style.borderColor = 'var(--bs-danger-border-subtle)';
+									header.style.backgroundColor = 'var(--bs-danger-bg-subtle)';
+         	        break;
+        	    case TOAST_STATUS.WARNING:
+								if(icon == 'bs'){
+        	        statusIcon.classList.add("text-warning", "bi-exclamation-circle-fill");
+								} else {
+        	        statusIcon.classList.add("text-warning");
+								}
+        	        toastEl.setAttribute("role", "alert");
+        	        toastEl.setAttribute("aria-live", "assertive");
+									toastEl.style.borderColor = 'var(--bs-warning-border-subtle)';
+									header.style.borderColor = 'var(--bs-warning-border-subtle)';
+									header.style.backgroundColor = 'var(--bs-warning-bg-subtle)';
+        	        break;
+        	    case TOAST_STATUS.INFO:
+								if(icon == 'bs'){
+        	        statusIcon.classList.add("text-info", "bi-info-circle-fill");
+								} else {
+        	        statusIcon.classList.add("text-info");
+								}
+								toastEl.style.borderColor = 'var(--bs-info-border-subtle)';
+								header.style.borderColor = 'var(--bs-info-border-subtle)';
+								header.style.backgroundColor = 'var(--bs-info-bg-subtle)';
+								break;
+        	    default:
+								if(icon == 'bs' || icon == ''){
+        	        statusIcon.classList.add("d-none");
+								} else {} // do nothing?
+        	        break;
+						}
     }
     /**
      * Inserts toast HTML onto page and sets up for toast deletion.
